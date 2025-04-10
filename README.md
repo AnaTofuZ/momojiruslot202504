@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+
+# アレ
+- pnpmを使っているので`pnpm install`とかしてください
+    - Node.jsが動いていれば`corepack enable`とかで使えるようになるはず
+- og:imageは`npx tsx utils/image-output.ts`でpublic/ogp/ogp.pngにサンプルが生成されます
+    - 内容はlib/ogdump.tsxのsatoriのTSXが該当します
+
 ## Getting Started
 
 First, run the development server:

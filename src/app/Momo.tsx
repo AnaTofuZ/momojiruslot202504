@@ -2,7 +2,13 @@
 
 import React, { useState, useRef } from "react";
 
-const SYMBOLS = ["宝", "灯", "桃", "汁"];
+const REEL_SYMBOLS = [
+  ["宝", "方", "砲", "峰", "鳥", '報'], // リール1（REEL1_SYMBOLS）
+  ["灯", "刀", "塔", "糖", "腸", '等'], // リール2（REEL2_SYMBOLS）
+  ["桃", "栗", "梨", "梅", "杏", "煮"], // リール3（REEL3_SYMBOLS）
+  ["汁", "城", "郎", "子", "梨"], // リール4（REEL4_SYMBOLS）
+];
+
 
 export const Slot: React.FC = () => {
   const [reels, setReels] = useState(Array(4).fill(0));
@@ -21,97 +27,122 @@ export const Slot: React.FC = () => {
   ]);
   const spinPositionRefs = useRef<number[]>([0, 0, 0, 0]);
 
-  const generateReelContent = React.useCallback((position: number) => {
-    const reelContent = [];
-    for (let i = -2; i <= 2; i++) {
-      const adjustedPosition = position + i;
-      const normalizedPosition =
-        adjustedPosition >= 0
-          ? adjustedPosition % SYMBOLS.length
-          : (SYMBOLS.length + (adjustedPosition % SYMBOLS.length)) %
-            SYMBOLS.length;
-      reelContent.push(SYMBOLS[normalizedPosition]);
-    }
-    return reelContent;
-  }, []);
+  const generateReelContent = React.useCallback(
+      (reelIndex: number, position: number) => {
+        const reelContent = [];
+        const symbols = REEL_SYMBOLS[reelIndex]; // 該当リールのシンボルリスト
 
-  const stopReel = React.useCallback(
-    (reelIndex: number) => {
-      if (!spinning[reelIndex]) return;
+        for (let i = -2; i <= 2; i++) {
+          const adjustedPosition = position + i;
 
-      if (spinIntervalRefs.current[reelIndex]) {
-        clearInterval(spinIntervalRefs.current[reelIndex]!);
-        spinIntervalRefs.current[reelIndex] = null;
-      }
+          // インデックスを正規化 (リールの範囲内)
+          const normalizedPosition =
+              adjustedPosition >= 0
+                  ? adjustedPosition % symbols.length
+                  : (symbols.length + (adjustedPosition % symbols.length)) %
+                  symbols.length;
 
-      const newSpinning = [...spinning];
-      newSpinning[reelIndex] = false;
-      setSpinning(newSpinning);
-
-      if (!muted && audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-      }
-
-      // Check for reach (2 consecutive matches)
-      if (reelIndex >= 1) {
-        const previousSymbols = reels
-          .slice(0, reelIndex + 1)
-          .map((pos) => SYMBOLS[pos % SYMBOLS.length]);
-        const consecutive = previousSymbols.every(
-          (symbol) => symbol === previousSymbols[0]
-        );
-        if (consecutive && reelIndex === 1) {
-          setReach(true);
-          if (!muted && reachAudioRef.current) {
-            reachAudioRef.current.play();
-          }
+          reelContent.push(symbols[normalizedPosition]);
         }
-      }
-
-      // Check for win
-      if (reelIndex === 3) {
-        const allSymbols = reels.map((pos) => SYMBOLS[pos % SYMBOLS.length]);
-        if (allSymbols.every((symbol) => symbol === allSymbols[0])) {
-          setWin(true);
-          if (!muted && winAudioRef.current) {
-            winAudioRef.current.play();
-          }
-        }
-      }
-    },
-    [muted, reels, spinning]
+        return reelContent;
+      },
+      []
   );
 
+
+  // 指定されたリールを停止
+  const stopReel = React.useCallback(
+      (reelIndex: number) => {
+        if (!spinning[reelIndex]) return; // スピンしていない場合は無視
+
+        if (spinIntervalRefs.current[reelIndex]) {
+          clearInterval(spinIntervalRefs.current[reelIndex]!);
+          spinIntervalRefs.current[reelIndex] = null;
+        }
+
+        const newSpinning = [...spinning];
+        newSpinning[reelIndex] = false;
+        setSpinning(newSpinning);
+
+        if (!muted && audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play();
+        }
+
+        // リーチチェック
+        if (reelIndex >= 1) {
+          const previousSymbols = reels
+              .slice(0, reelIndex + 1)
+              .map((pos, idx) => {
+                const symbols = REEL_SYMBOLS[idx];
+                return symbols[pos % symbols.length];
+              });
+
+          const consecutive = previousSymbols.every(
+              (symbol) => symbol === previousSymbols[0]
+          );
+
+          if (consecutive && reelIndex === 1) {
+            setReach(true);
+            if (!muted && reachAudioRef.current) {
+              reachAudioRef.current.play();
+            }
+          }
+        }
+
+        // 当たりチェック
+        if (reelIndex === 3) {
+          const allSymbols = reels.map((pos, idx) => {
+            const symbols = REEL_SYMBOLS[idx];
+            return symbols[pos % symbols.length];
+          });
+
+          if (allSymbols.every((symbol) => symbol === allSymbols[0])) {
+            setWin(true);
+            if (!muted && winAudioRef.current) {
+              winAudioRef.current.play();
+            }
+          }
+        }
+      },
+      [muted, reels, spinning]
+  );
+
+
+  // 全リールを開始
   const startSpin = React.useCallback(() => {
     if (spinning.some((s) => s)) return;
+
     setWin(false);
     setReach(false);
     setSpinning(Array(4).fill(true));
 
-    const newReels = reels.map(() =>
-      Math.floor(Math.random() * SYMBOLS.length)
+    const newReels = reels.map((_, i) =>
+        Math.floor(Math.random() * REEL_SYMBOLS[i].length)
     );
     setReels(newReels);
 
-    // Start spinning animation for each reel
+    // 各リールのスピンを開始
     reels.forEach((_, index) => {
       spinPositionRefs.current[index] = 0;
+
       if (spinIntervalRefs.current[index]) {
         clearInterval(spinIntervalRefs.current[index]!);
       }
 
       spinIntervalRefs.current[index] = setInterval(() => {
         spinPositionRefs.current[index] =
-          (spinPositionRefs.current[index] + 1) % SYMBOLS.length;
+            (spinPositionRefs.current[index] + 1) % REEL_SYMBOLS[index].length;
+
         setReels((prev) => {
           const newReels = [...prev];
           newReels[index] = spinPositionRefs.current[index];
           return newReels;
         });
-      }, 50);
+      }, 50); // リール更新間隔
     });
   }, [reels, spinning]);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-400 to-pink-600 flex items-center justify-center p-4">
@@ -127,7 +158,7 @@ export const Slot: React.FC = () => {
           {/* タイトルバー */}
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-4xl font-bold text-pink-200 drop-shadow-lg">
-              パチスロ
+              うろ覚え宝灯桃汁スロットマシーン
             </h1>
             <button
               onClick={() => setMuted(!muted)}
@@ -149,7 +180,7 @@ export const Slot: React.FC = () => {
                   ${reach && reelIndex > 1 ? "border-red-500" : ""}`}
               >
                 {/* Center line - adjusted to align with symbol center */}
-                <div className="absolute left-0 right-0 top-[calc(50%+1rem)] h-[2px] bg-yellow-400 z-10 opacity-70" />
+                <div className="absolute left-0 right-0 top-[calc(50%-2.5rem)] h-[2px] bg-yellow-400 z-10 opacity-70" />
 
                 {/* Reel window */}
                 <div className="relative h-full">
@@ -170,7 +201,7 @@ export const Slot: React.FC = () => {
                         : "translateY(0)",
                     }}
                   >
-                    {generateReelContent(position).map((symbol, index) => (
+                    {generateReelContent(reelIndex,position).map((symbol, index) => (
                       <div
                         key={index}
                         className={`h-[72px] flex items-center justify-center text-6xl font-bold
@@ -199,7 +230,7 @@ export const Slot: React.FC = () => {
                 key={reelIndex}
                 onClick={() => stopReel(reelIndex)}
                 disabled={!spinning[reelIndex]}
-                className={`py-4 rounded-full text-white font-bold shadow-lg transform active:scale-95 transition-transform
+                className={`py-4 rounded-full text-white font-bold shadow-lg transform active:scale-95 transition-transform text-lg
                   ${
                     spinning[reelIndex]
                       ? "bg-red-500 hover:bg-red-600 border-2 border-red-300"
