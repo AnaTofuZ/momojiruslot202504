@@ -28,6 +28,7 @@ const charToCodeMap: Record<string, string> = {
   "城": "g3GhI",
   "郎": "j4Klm",
   "子": "n5Pqr",
+  "粉": "u5X9f",
 };
 
 export const getCodeFromChar = (char: string): string => {
