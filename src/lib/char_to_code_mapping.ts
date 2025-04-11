@@ -28,6 +28,19 @@ const generateCombinations = (symbols: string[][]): string[] => {
 };
 
 export const combinations = generateCombinations(REEL_SYMBOLS);
+export const getSymbolsFromReelSymbolsIndexes = (
+  i: number,
+  j: number,
+  m: number,
+  p: number,
+): string => {
+  const reel1 = REEL_SYMBOLS[0][i];
+  const reel2 = REEL_SYMBOLS[1][j];
+  const reel3 = REEL_SYMBOLS[2][m];
+  const reel4 = REEL_SYMBOLS[3][p];
+
+  return [reel1, reel2, reel3, reel4].join("");
+};
 
 const charToCodeMap: Record<string, string> = {
   // リール1の文字

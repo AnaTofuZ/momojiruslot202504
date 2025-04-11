@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import {REEL_SYMBOLS} from "@/lib/char_to_code_mapping";
-
-
+import { REEL_SYMBOLS } from "@/lib/char_to_code_mapping";
+import Link from "next/link";
 
 export const Slot: React.FC = () => {
   const [reels, setReels] = useState(Array(4).fill(0));
@@ -22,87 +21,87 @@ export const Slot: React.FC = () => {
   ]);
   const spinPositionRefs = useRef<number[]>([0, 0, 0, 0]);
 
+  const [result, setResult] = useState<string>();
+
   const generateReelContent = React.useCallback(
-      (reelIndex: number, position: number) => {
-        const reelContent = [];
-        const symbols = REEL_SYMBOLS[reelIndex]; // 該当リールのシンボルリスト
+    (reelIndex: number, position: number) => {
+      const reelContent = [];
+      const symbols = REEL_SYMBOLS[reelIndex]; // 該当リールのシンボルリスト
 
-        for (let i = -2; i <= 2; i++) {
-          const adjustedPosition = position + i;
+      for (let i = -2; i <= 2; i++) {
+        const adjustedPosition = position + i;
 
-          // インデックスを正規化 (リールの範囲内)
-          const normalizedPosition =
-              adjustedPosition >= 0
-                  ? adjustedPosition % symbols.length
-                  : (symbols.length + (adjustedPosition % symbols.length)) %
-                  symbols.length;
+        // インデックスを正規化 (リールの範囲内)
+        const normalizedPosition =
+          adjustedPosition >= 0
+            ? adjustedPosition % symbols.length
+            : (symbols.length + (adjustedPosition % symbols.length)) %
+              symbols.length;
 
-          reelContent.push(symbols[normalizedPosition]);
-        }
-        return reelContent;
-      },
-      []
+        reelContent.push(symbols[normalizedPosition]);
+      }
+      return reelContent;
+    },
+    [],
   );
-
 
   // 指定されたリールを停止
   const stopReel = React.useCallback(
-      (reelIndex: number) => {
-        if (!spinning[reelIndex]) return; // スピンしていない場合は無視
+    (reelIndex: number) => {
+      if (!spinning[reelIndex]) return; // スピンしていない場合は無視
 
-        if (spinIntervalRefs.current[reelIndex]) {
-          clearInterval(spinIntervalRefs.current[reelIndex]!);
-          spinIntervalRefs.current[reelIndex] = null;
-        }
+      if (spinIntervalRefs.current[reelIndex]) {
+        clearInterval(spinIntervalRefs.current[reelIndex]!);
+        spinIntervalRefs.current[reelIndex] = null;
+      }
 
-        const newSpinning = [...spinning];
-        newSpinning[reelIndex] = false;
-        setSpinning(newSpinning);
+      const newSpinning = [...spinning];
+      newSpinning[reelIndex] = false;
+      setSpinning(newSpinning);
 
-        if (!muted && audioRef.current) {
-          audioRef.current.currentTime = 0;
-          audioRef.current.play();
-        }
+      if (!muted && audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
 
-        // リーチチェック
-        if (reelIndex >= 1) {
-          const previousSymbols = reels
-              .slice(0, reelIndex + 1)
-              .map((pos, idx) => {
-                const symbols = REEL_SYMBOLS[idx];
-                return symbols[pos % symbols.length];
-              });
-
-          const consecutive = previousSymbols.every(
-              (symbol) => symbol === previousSymbols[0]
-          );
-
-          if (consecutive && reelIndex === 1) {
-            setReach(true);
-            if (!muted && reachAudioRef.current) {
-              reachAudioRef.current.play();
-            }
-          }
-        }
-
-        // 当たりチェック
-        if (reelIndex === 3) {
-          const allSymbols = reels.map((pos, idx) => {
+      // リーチチェック
+      if (reelIndex >= 1) {
+        const previousSymbols = reels
+          .slice(0, reelIndex + 1)
+          .map((pos, idx) => {
             const symbols = REEL_SYMBOLS[idx];
             return symbols[pos % symbols.length];
           });
 
-          if (allSymbols.every((symbol) => symbol === allSymbols[0])) {
-            setWin(true);
-            if (!muted && winAudioRef.current) {
-              winAudioRef.current.play();
-            }
+        const consecutive = previousSymbols.every(
+          (symbol) => symbol === previousSymbols[0],
+        );
+
+        if (consecutive && reelIndex === 1) {
+          setReach(true);
+          if (!muted && reachAudioRef.current) {
+            reachAudioRef.current.play();
           }
         }
-      },
-      [muted, reels, spinning]
-  );
+      }
 
+      // 当たりチェック
+      if (reelIndex === 3) {
+        const allSymbols = reels.map((pos, idx) => {
+          const symbols = REEL_SYMBOLS[idx];
+          return symbols[pos % symbols.length];
+        });
+
+        if (allSymbols.every((symbol) => symbol === allSymbols[0])) {
+          setWin(true);
+          if (!muted && winAudioRef.current) {
+            winAudioRef.current.play();
+          }
+        }
+      }
+    },
+    [muted, reels, spinning],
+  );
 
   // 全リールを開始
   const startSpin = React.useCallback(() => {
@@ -113,7 +112,7 @@ export const Slot: React.FC = () => {
     setSpinning(Array(4).fill(true));
 
     const newReels = reels.map((_, i) =>
-        Math.floor(Math.random() * REEL_SYMBOLS[i].length)
+      Math.floor(Math.random() * REEL_SYMBOLS[i].length),
     );
     setReels(newReels);
 
@@ -127,7 +126,7 @@ export const Slot: React.FC = () => {
 
       spinIntervalRefs.current[index] = setInterval(() => {
         spinPositionRefs.current[index] =
-            (spinPositionRefs.current[index] + 1) % REEL_SYMBOLS[index].length;
+          (spinPositionRefs.current[index] + 1) % REEL_SYMBOLS[index].length;
 
         setReels((prev) => {
           const newReels = [...prev];
@@ -137,7 +136,6 @@ export const Slot: React.FC = () => {
       }, 50); // リール更新間隔
     });
   }, [reels, spinning]);
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-400 to-pink-600 flex items-center justify-center p-4">
@@ -196,19 +194,21 @@ export const Slot: React.FC = () => {
                         : "translateY(0)",
                     }}
                   >
-                    {generateReelContent(reelIndex,position).map((symbol, index) => (
-                      <div
-                        key={index}
-                        className={`h-[72px] flex items-center justify-center text-6xl font-bold
+                    {generateReelContent(reelIndex, position).map(
+                      (symbol, index) => (
+                        <div
+                          key={index}
+                          className={`h-[72px] flex items-center justify-center text-6xl font-bold
                           ${
                             index === 2
                               ? "text-pink-200 drop-shadow-glow"
                               : "text-gray-600"
                           }`}
-                      >
-                        {symbol}
-                      </div>
-                    ))}
+                        >
+                          {symbol}
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               </div>
@@ -258,10 +258,7 @@ export const Slot: React.FC = () => {
           </div>
         )}
 
-        <audio
-          ref={audioRef}
-          src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"
-        />
+        <audio ref={audioRef} src="./nari.mp3" />
         <audio
           ref={reachAudioRef}
           src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"
