@@ -1,13 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import {REEL_SYMBOLS} from "@/lib/char_to_code_mapping";
 
-const REEL_SYMBOLS = [
-  ["宝", "方", "砲", "峰", "鳥", '報'], // リール1（REEL1_SYMBOLS）
-  ["灯", "刀", "塔", "糖", "腸", '等'], // リール2（REEL2_SYMBOLS）
-  ["桃", "栗", "梨", "梅", "杏", "煮"], // リール3（REEL3_SYMBOLS）
-  ["汁", "城", "郎", "子", "粉"], // リール4（REEL4_SYMBOLS）
-];
 
 
 export const Slot: React.FC = () => {
