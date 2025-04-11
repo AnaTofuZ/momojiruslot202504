@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from "react";
 import { REEL_SYMBOLS } from "@/lib/char_to_code_mapping";
-import Link from "next/link";
 
 export const Slot: React.FC = () => {
   const [reels, setReels] = useState(Array(4).fill(0));
@@ -21,17 +20,13 @@ export const Slot: React.FC = () => {
   ]);
   const spinPositionRefs = useRef<number[]>([0, 0, 0, 0]);
 
-  const [result, setResult] = useState<string>();
-
   const generateReelContent = React.useCallback(
     (reelIndex: number, position: number) => {
       const reelContent = [];
-      const symbols = REEL_SYMBOLS[reelIndex]; // 該当リールのシンボルリスト
+      const symbols = REEL_SYMBOLS[reelIndex];
 
       for (let i = -2; i <= 2; i++) {
         const adjustedPosition = position + i;
-
-        // インデックスを正規化 (リールの範囲内)
         const normalizedPosition =
           adjustedPosition >= 0
             ? adjustedPosition % symbols.length
@@ -45,10 +40,9 @@ export const Slot: React.FC = () => {
     [],
   );
 
-  // 指定されたリールを停止
   const stopReel = React.useCallback(
     (reelIndex: number) => {
-      if (!spinning[reelIndex]) return; // スピンしていない場合は無視
+      if (!spinning[reelIndex]) return;
 
       if (spinIntervalRefs.current[reelIndex]) {
         clearInterval(spinIntervalRefs.current[reelIndex]!);
@@ -64,7 +58,6 @@ export const Slot: React.FC = () => {
         audioRef.current.play();
       }
 
-      // リーチチェック
       if (reelIndex >= 1) {
         const previousSymbols = reels
           .slice(0, reelIndex + 1)
@@ -85,7 +78,6 @@ export const Slot: React.FC = () => {
         }
       }
 
-      // 当たりチェック
       if (reelIndex === 3) {
         const allSymbols = reels.map((pos, idx) => {
           const symbols = REEL_SYMBOLS[idx];
@@ -103,7 +95,6 @@ export const Slot: React.FC = () => {
     [muted, reels, spinning],
   );
 
-  // 全リールを開始
   const startSpin = React.useCallback(() => {
     if (spinning.some((s) => s)) return;
 
@@ -116,7 +107,6 @@ export const Slot: React.FC = () => {
     );
     setReels(newReels);
 
-    // 各リールのスピンを開始
     reels.forEach((_, index) => {
       spinPositionRefs.current[index] = 0;
 
@@ -133,127 +123,76 @@ export const Slot: React.FC = () => {
           newReels[index] = spinPositionRefs.current[index];
           return newReels;
         });
-      }, 50); // リール更新間隔
+      }, 50);
     });
   }, [reels, spinning]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-400 to-pink-600 flex items-center justify-center p-4">
-      {/* パチスロ筐体 */}
-      <div className="relative w-full max-w-3xl aspect-[3/4] bg-gradient-to-b from-pink-300 to-pink-400 rounded-[2rem] shadow-2xl border-8 border-pink-200">
-        {/* 筐体の装飾パネル */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-pink-200 to-transparent rounded-t-[1.5rem]">
-          <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809')] bg-cover bg-center opacity-20 rounded-t-[1.5rem]" />
+    <div className="min-h-[100vh] bg-gradient-to-b from-pink-400 to-pink-600 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-gradient-to-b from-pink-300 to-pink-400 rounded-[2rem] shadow-2xl border-8 border-pink-200 overflow-hidden">
+        <div className="p-4 text-center bg-pink-800 text-white text-xl font-bold">
+          うろ覚え宝灯桃汁スロットマシーン
         </div>
 
-        {/* メインディスプレイエリア */}
-        <div className="absolute top-32 left-6 right-6 bottom-48 bg-gradient-to-b from-pink-800 to-pink-700 rounded-lg p-6 border-4 border-pink-300">
-          {/* タイトルバー */}
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-4xl font-bold text-pink-200 drop-shadow-lg">
-              うろ覚え宝灯桃汁スロットマシーン
-            </h1>
-            <button
-              onClick={() => setMuted(!muted)}
-              className="text-pink-200 hover:text-pink-100"
-            ></button>
-          </div>
+        <div className="px-4 py-2 bg-pink-700 flex justify-between gap-2">
+          {reels.map((position, reelIndex) => (
+            <div
+              key={reelIndex}
+              className="relative bg-black rounded-md overflow-hidden border-2 border-pink-300 flex-1 h-[240px] sm:h-[300px]"
+            >
+              <div className="absolute top-[50%] left-0 right-0 h-[2px] bg-yellow-400 opacity-60 z-10" />
 
-          {/* リール表示部分 */}
-          <div
-            className={`grid grid-cols-4 gap-2 h-[calc(100%-4rem)] ${
-              win ? "animate-pulse" : ""
-            }`}
-          >
-            {reels.map((position, reelIndex) => (
-              <div
-                key={reelIndex}
-                className={`relative bg-black rounded-md overflow-hidden border-2
-                  ${win ? "border-yellow-400" : "border-pink-300"}
-                  ${reach && reelIndex > 1 ? "border-red-500" : ""}`}
-              >
-                {/* Center line - adjusted to align with symbol center */}
-                <div className="absolute left-0 right-0 top-[calc(50%-2.5rem)] h-[2px] bg-yellow-400 z-10 opacity-70" />
-
-                {/* Reel window */}
-                <div className="relative h-full">
-                  {/* Top gradient */}
-                  <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black to-transparent z-10" />
-
-                  {/* Bottom gradient */}
-                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent z-10" />
-
-                  {/* Symbols */}
-                  <div
-                    className="absolute inset-0 flex flex-col items-center transition-transform duration-100 pt-16"
-                    style={{
-                      transform: spinning[reelIndex]
-                        ? `translateY(-${
-                            (spinPositionRefs.current[reelIndex] % 1) * 100
-                          }%)`
-                        : "translateY(0)",
-                    }}
-                  >
-                    {generateReelContent(reelIndex, position).map(
-                      (symbol, index) => (
-                        <div
-                          key={index}
-                          className={`h-[72px] flex items-center justify-center text-6xl font-bold
-                          ${
-                            index === 2
-                              ? "text-pink-200 drop-shadow-glow"
-                              : "text-gray-600"
-                          }`}
-                        >
-                          {symbol}
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </div>
+              <div className="absolute inset-0 flex flex-col items-center pt-8 pb-8">
+                {generateReelContent(reelIndex, position).map(
+                  (symbol, index) => (
+                    <div
+                      key={index}
+                      className={`h-[40px] sm:h-[56px] flex items-center justify-center text-3xl sm:text-5xl font-bold ${
+                        index === 2 ? "text-pink-200" : "text-gray-600"
+                      }`}
+                    >
+                      {symbol}
+                    </div>
+                  ),
+                )}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
-        {/* コントロールパネル */}
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-pink-400 to-pink-300 rounded-b-[1.5rem] px-8 pt-6">
-          {/* 停止ボタン */}
-          <div className="grid grid-cols-4 gap-4 mb-4">
+        <div className="px-4 py-6 bg-pink-300">
+          <div className="grid grid-cols-4 gap-2 mb-4">
             {reels.map((_, reelIndex) => (
               <button
                 key={reelIndex}
                 onClick={() => stopReel(reelIndex)}
                 disabled={!spinning[reelIndex]}
-                className={`py-4 rounded-full text-white font-bold shadow-lg transform active:scale-95 transition-transform text-lg
-                  ${
-                    spinning[reelIndex]
-                      ? "bg-red-500 hover:bg-red-600 border-2 border-red-300"
-                      : "bg-gray-500 cursor-not-allowed"
-                  }`}
+                className={`py-2 rounded-full text-white font-bold shadow text-sm ${
+                  spinning[reelIndex]
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
               >
                 停止 {reelIndex + 1}
               </button>
             ))}
           </div>
 
-          {/* スタートレバー */}
           <button
             onClick={startSpin}
             disabled={spinning.some((s) => s)}
-            className={`w-full py-4 rounded-full text-white font-bold shadow-lg transform active:scale-95 transition-transform
-              ${
-                spinning.some((s) => s)
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-green-500 hover:bg-green-600 border-2 border-green-300"
-              }`}
+            className={`w-full py-3 rounded-full text-white font-bold shadow ${
+              spinning.some((s) => s)
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
           >
             スタート
           </button>
         </div>
 
         {win && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-yellow-400 animate-bounce drop-shadow-glow z-50">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-yellow-300 text-4xl font-bold animate-bounce">
             大当たり！
           </div>
         )}
@@ -261,7 +200,7 @@ export const Slot: React.FC = () => {
         <audio ref={audioRef} src="./nari.mp3" />
         <audio
           ref={reachAudioRef}
-          src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"
+          src="https://assets.mixkit.co/active_storage/sfx/2020/2019-preview.mp3"
         />
         <audio
           ref={winAudioRef}
