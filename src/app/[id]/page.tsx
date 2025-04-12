@@ -12,12 +12,13 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const jaFromId = getCharsFromURL(id).join("");
 
   return {
-    title: `スロットマシン - ${id}`,
+    title: `うろ覚え宝灯桃汁スロットマシーン - ${jaFromId}`,
     description: "スロットマシンのページです。",
     openGraph: {
-      title: `スロットマシン - ${id}`,
+      title: `うろ覚え宝灯桃汁スロットマシーン - ${jaFromId}`,
       description: "スロットマシンのページです。",
       images: [
         {
