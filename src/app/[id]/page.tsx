@@ -21,7 +21,7 @@ export async function generateMetadata({
       description: "スロットマシンのページです。",
       images: [
         {
-          url: `/ogp/${id}.png`,
+          url: `./ogp/${id}.png`,
           width: 1200,
           height: 630,
         },
@@ -55,7 +55,7 @@ export default async function Page({
         {/* 中央の画像 */}
         <div className="w-full flex justify-center mb-8">
           <img
-            src={`/ogp/${id}.png`}
+            src={`./ogp/${id}.png`}
             alt={jaFromId}
             className="max-w-full max-h-[300px] rounded-2xl shadow-xl border-4 border-pink-200"
           />
