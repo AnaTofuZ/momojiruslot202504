@@ -39,6 +39,14 @@ export const Slot: React.FC = () => {
   }, [spinning, reels, setGenerateURIID]);
 
   React.useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = 0.3;
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  }, []);
+
+  React.useEffect(() => {
     if (slotState === "spinning") {
       if (videoRef.current) {
         videoRef.current.volume = 0.3;
