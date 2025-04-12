@@ -83,7 +83,6 @@ export const Slot: React.FC = () => {
     (reelIndex: number) => {
       if (!spinning[reelIndex]) return;
 
-      setReach(true);
       if (spinIntervalRefs.current[reelIndex]) {
         clearInterval(spinIntervalRefs.current[reelIndex]!);
         spinIntervalRefs.current[reelIndex] = null;
@@ -92,11 +91,6 @@ export const Slot: React.FC = () => {
       const newSpinning = [...spinning];
       newSpinning[reelIndex] = false;
       setSpinning(newSpinning);
-
-      if (!muted && audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-      }
 
       if (reelIndex >= 1) {
         const previousSymbols = reels
