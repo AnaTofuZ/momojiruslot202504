@@ -25,10 +25,16 @@ export const Slot: React.FC = () => {
   );
 
   React.useEffect(() => {
-    if (!spinning.some((s) => s)) {
-      setSlotState("stopped");
+    if (spinning.every((s) => !s)) {
+      // 全てのリールが停止している場合
+      const stoppedSymbols = reels.map((position, reelIndex) => {
+        const symbols = REEL_SYMBOLS[reelIndex]; // 各リールに対応するシンボルリスト
+        return symbols[position % symbols.length]; // 停止時のシンボル
+      });
+
+      console.log("各リールの停止シンボル:", stoppedSymbols);
     }
-  }, [spinning]);
+  }, [spinning, reels]);
 
   React.useEffect(() => {
     if (slotState === "spinning") {
@@ -110,7 +116,8 @@ export const Slot: React.FC = () => {
         }
       }
 
-      if (spinning.every((s) => !s)) {
+      if (newSpinning.every((s) => !s)) {
+        setSlotState("stopped");
         const allSymbols = reels.map((pos, idx) => {
           const symbols = REEL_SYMBOLS[idx];
           return symbols[pos % symbols.length];

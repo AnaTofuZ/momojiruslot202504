@@ -1,6 +1,6 @@
 export const REEL_SYMBOLS = [
-  ["宝", "方", "砲", "峰", "鳥", "報"], // リール1（REEL1_SYMBOLS）
-  ["灯", "刀", "塔", "糖", "腸", "等"], // リール2（REEL2_SYMBOLS）
+  ["宝", "方", "砲", "峰", "鳥", "報", "鬼"], // リール1（REEL1_SYMBOLS）
+  ["灯", "刀", "塔", "糖", "腸", "等", "頭"], // リール2（REEL2_SYMBOLS）
   ["桃", "栗", "梨", "梅", "杏", "煮"], // リール3（REEL3_SYMBOLS）
   ["汁", "城", "郎", "子", "粉"], // リール4（REEL4_SYMBOLS）
 ];
@@ -50,6 +50,7 @@ const charToCodeMap: Record<string, string> = {
   峰: "j8K9l",
   鳥: "m0Nop",
   報: "qR1sT",
+  鬼: "pZ1sS",
 
   // リール2の文字
   灯: "u2Vwx",
@@ -58,6 +59,7 @@ const charToCodeMap: Record<string, string> = {
   糖: "e7F8g",
   腸: "h9I0j",
   等: "kL1mn",
+  頭: "uf2m2",
 
   // リール3の文字
   桃: "o2Pqr",
