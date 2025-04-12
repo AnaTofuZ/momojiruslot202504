@@ -35,6 +35,7 @@
             nodejs
             yarn
             pnpm
+            yt-dlp
           ];
         };
       }

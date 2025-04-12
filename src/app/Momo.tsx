@@ -19,6 +19,22 @@ export const Slot: React.FC = () => {
     null,
   ]);
   const spinPositionRefs = useRef<number[]>([0, 0, 0, 0]);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = 0.4;
+    }
+  }, [videoRef]);
+
+  React.useEffect(() => {
+    if (spinning.some((s) => s)) {
+      if (videoRef.current) {
+        videoRef.current.play();
+        videoRef.current.volume = 0.1;
+      }
+    }
+  }, [spinning]);
 
   const generateReelContent = React.useCallback(
     (reelIndex: number, position: number) => {
@@ -134,6 +150,7 @@ export const Slot: React.FC = () => {
           うろ覚え宝灯桃汁スロットマシーン
         </div>
 
+        <video ref={videoRef} src={"./nihao.mp4"} autoPlay />
         <div className="px-4 py-2 bg-pink-700 flex justify-between gap-2">
           {reels.map((position, reelIndex) => (
             <div
@@ -172,9 +189,7 @@ export const Slot: React.FC = () => {
                     ? "bg-red-500 hover:bg-red-600"
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
-              >
-                停止 {reelIndex + 1}
-              </button>
+              ></button>
             ))}
           </div>
 
