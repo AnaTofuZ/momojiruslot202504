@@ -6,9 +6,9 @@ import { REEL_SYMBOLS } from "@/lib/char_to_code_mapping";
 export const Slot: React.FC = () => {
   const [reels, setReels] = useState(Array(4).fill(0));
   const [spinning, setSpinning] = useState(Array(4).fill(false));
-  const [muted, setMuted] = useState(false);
+  const [muted] = useState(false);
   const [win, setWin] = useState(false);
-  const [reach, setReach] = useState(false);
+  const [, setReach] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const reachAudioRef = useRef<HTMLAudioElement>(null);
   const winAudioRef = useRef<HTMLAudioElement>(null);
@@ -110,7 +110,7 @@ export const Slot: React.FC = () => {
         }
       }
 
-      if (reelIndex === 3) {
+      if (spinning.every((s) => !s)) {
         const allSymbols = reels.map((pos, idx) => {
           const symbols = REEL_SYMBOLS[idx];
           return symbols[pos % symbols.length];
