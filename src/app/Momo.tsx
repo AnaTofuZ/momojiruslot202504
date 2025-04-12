@@ -20,21 +20,37 @@ export const Slot: React.FC = () => {
   ]);
   const spinPositionRefs = useRef<number[]>([0, 0, 0, 0]);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [slotState, setSlotState] = useState<"idle" | "spinning" | "stopped">(
+    "idle",
+  );
 
   React.useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.volume = 0.4;
+    if (!spinning.some((s) => s)) {
+      setSlotState("stopped");
     }
-  }, [videoRef]);
+  }, [spinning]);
 
   React.useEffect(() => {
-    if (spinning.some((s) => s)) {
+    if (slotState === "spinning") {
       if (videoRef.current) {
         videoRef.current.play();
         videoRef.current.volume = 0.1;
       }
+    } else if (slotState === "stopped") {
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
     }
-  }, [spinning]);
+
+    return () => {
+      if (slotState == "stopped") {
+        if (videoRef.current) {
+          videoRef.current.pause();
+          videoRef.current.currentTime = 0;
+        }
+      }
+    };
+  }, [slotState]);
 
   const generateReelContent = React.useCallback(
     (reelIndex: number, position: number) => {
@@ -114,6 +130,7 @@ export const Slot: React.FC = () => {
   const startSpin = React.useCallback(() => {
     if (spinning.some((s) => s)) return;
 
+    setSlotState("spinning");
     setWin(false);
     setReach(false);
     setSpinning(Array(4).fill(true));
