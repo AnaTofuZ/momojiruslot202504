@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "宝灯桃汁スロットマシーン2025春",
   description: "宝灯桃汁スロットマシーン2025春",
+  metadataBase: new URL("https://anatofuz.net/momojiruslot202504"),
 };
 
 export default function RootLayout({

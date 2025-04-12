@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { REEL_SYMBOLS } from "@/lib/char_to_code_mapping";
+import { generateURL, REEL_SYMBOLS } from "@/lib/char_to_code_mapping";
+import { XPostButton } from "@/app/xpost";
 
 export const Slot: React.FC = () => {
   const [reels, setReels] = useState(Array(4).fill(0));
@@ -18,6 +19,7 @@ export const Slot: React.FC = () => {
     null,
     null,
   ]);
+  const [generateURIID, setGenerateURIID] = useState("");
   const spinPositionRefs = useRef<number[]>([0, 0, 0, 0]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [slotState, setSlotState] = useState<"idle" | "spinning" | "stopped">(
@@ -32,15 +34,15 @@ export const Slot: React.FC = () => {
         return symbols[position % symbols.length]; // 停止時のシンボル
       });
 
-      console.log("各リールの停止シンボル:", stoppedSymbols);
+      setGenerateURIID(generateURL(stoppedSymbols));
     }
-  }, [spinning, reels]);
+  }, [spinning, reels, setGenerateURIID]);
 
   React.useEffect(() => {
     if (slotState === "spinning") {
       if (videoRef.current) {
+        videoRef.current.volume = 0.3;
         videoRef.current.play();
-        videoRef.current.volume = 0.1;
       }
     } else if (slotState === "stopped") {
       if (videoRef.current) {
@@ -51,7 +53,6 @@ export const Slot: React.FC = () => {
     return () => {
       if (slotState == "stopped") {
         if (videoRef.current) {
-          videoRef.current.pause();
           videoRef.current.currentTime = 0;
         }
       }
@@ -82,6 +83,7 @@ export const Slot: React.FC = () => {
     (reelIndex: number) => {
       if (!spinning[reelIndex]) return;
 
+      setReach(true);
       if (spinIntervalRefs.current[reelIndex]) {
         clearInterval(spinIntervalRefs.current[reelIndex]!);
         spinIntervalRefs.current[reelIndex] = null;
@@ -233,6 +235,12 @@ export const Slot: React.FC = () => {
         {win && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-yellow-300 text-4xl font-bold animate-bounce">
             大当たり！
+          </div>
+        )}
+
+        {slotState === "stopped" && (
+          <div className={"items-center justify-center flex flex-col"}>
+            <XPostButton id={generateURIID} />
           </div>
         )}
 
