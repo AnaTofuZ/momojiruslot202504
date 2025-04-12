@@ -100,6 +100,11 @@ export const Slot: React.FC = () => {
       newSpinning[reelIndex] = false;
       setSpinning(newSpinning);
 
+      if (!muted && audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
+
       if (reelIndex >= 1) {
         const previousSymbols = reels
           .slice(0, reelIndex + 1)
