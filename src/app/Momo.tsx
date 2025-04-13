@@ -178,8 +178,26 @@ export const Slot: React.FC = () => {
     });
   }, [reels, spinning]);
 
+  const onKeyDown = React.useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.code === "Space" || e.key === "Enter") {
+        if (slotState === "spinning") {
+          const reelIndex = spinning.findIndex((s) => s);
+          stopReel(reelIndex);
+        } else {
+          startSpin();
+        }
+      }
+    },
+    [slotState, spinning, startSpin, stopReel],
+  );
+
   return (
-    <div className="min-h-[100vh] bg-gradient-to-b from-pink-400 to-pink-600 flex items-center justify-center p-4">
+    <div
+      className="min-h-[100vh] bg-gradient-to-b from-pink-400 to-pink-600 flex items-center justify-center p-4"
+      onKeyDown={onKeyDown}
+      tabIndex={0}
+    >
       <div className="w-full max-w-md bg-gradient-to-b from-pink-300 to-pink-400 rounded-[2rem] shadow-2xl border-8 border-pink-200 overflow-hidden">
         <div className="p-3 text-center bg-pink-800 text-white text-xl font-bold">
           回転数: {startCount.toLocaleString()}
