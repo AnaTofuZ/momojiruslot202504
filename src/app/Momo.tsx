@@ -128,7 +128,6 @@ export const Slot: React.FC = () => {
 
       if (newSpinning.every((s) => !s)) {
         setSlotState("stopped");
-        console.log(reels);
         if (reels.every((pos) => pos === 0)) {
           setWin(true);
         }
