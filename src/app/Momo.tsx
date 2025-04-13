@@ -128,16 +128,9 @@ export const Slot: React.FC = () => {
 
       if (newSpinning.every((s) => !s)) {
         setSlotState("stopped");
-        const allSymbols = reels.map((pos, idx) => {
-          const symbols = REEL_SYMBOLS[idx];
-          return symbols[pos % symbols.length];
-        });
-
-        if (allSymbols.every((symbol) => symbol === allSymbols[0])) {
+        console.log(reels);
+        if (reels.every((pos) => pos === 0)) {
           setWin(true);
-          if (!muted && winAudioRef.current) {
-            winAudioRef.current.play();
-          }
         }
       }
     },
@@ -267,7 +260,7 @@ export const Slot: React.FC = () => {
 
         {win && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-yellow-300 text-4xl font-bold animate-bounce">
-            大当たり！
+            Congratulations!
           </div>
         )}
 
