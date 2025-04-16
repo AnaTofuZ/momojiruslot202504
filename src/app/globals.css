@@ -60,7 +60,7 @@ body {
   border-color: #db2774;
 }
 .button-wrap{
-  padding: 24px 16px;
+  padding: 24px 16px 0;
 }
 .button-stop{
   margin-bottom: 24px;
@@ -70,6 +70,7 @@ body {
 }
 .background-top{
   background-color: #EE3F87;
+  padding-bottom: 24px;
 }
 .background-btn-wrap{
   background-color: #f6c0de; 
@@ -81,13 +82,22 @@ body {
 .btn-start{
   background-color: #fff;
   color: #ad2660;
+  box-shadow: 0px 5px 10px 0px rgba(143, 31, 57, 1);
+}
+.btn-start:hover{
+  background-color: #f6c0de;
+  transition: 0.2s;
+  color: #ad2660;
 }
 .btn-stop{
   background-color: #fff;
   color: #ad2660;
+  box-shadow: 0px 5px 10px 0px rgba(143, 31, 57, 1);
+
 }
 button:disabled, button.disabled{
   background-color: #861043;
+  pointer-events: none;
 }
 .music-volume-off{
   margin: 0 auto 20px;
@@ -103,24 +113,16 @@ button:disabled, button.disabled{
   background-color: #861043;
   color: #ad2660;
 }
-.btn-sns {
+.tweet-button{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 3rem;
-  height: 3rem;
-  box-sizing: border-box;
-  border-radius: 50%;
-  color: white;
-  font-size: 1.5rem;
-  text-align: center;
-  text-decoration: none;
-  transition: 0.3s;
-  margin-top: 20px;
+  background-color: #14171a;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 30px;
+  justify-self: center;
+  padding: 10px 15px;
 }
-.btn-sns svg {
-  fill: #fff;
-}
-.btn-x {
-  background-color: #111319;
+.tweet-button:hover{
+  opacity: 0.8;
+  transition: 0.2s;
 }

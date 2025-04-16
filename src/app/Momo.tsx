@@ -195,7 +195,7 @@ export const Slot: React.FC = () => {
 
   return (
     <div
-      className="min-h-[100vh] bg-gradient-to-b flex items-center justify-center p-4 background all-wrap"
+      className="min-h-[100vh] bg-gradient-to-b flex items-center p-4 background all-wrap"
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
@@ -235,7 +235,7 @@ export const Slot: React.FC = () => {
                   (symbol, index) => (
                     <div
                       key={index}
-                      className={`h-[40px] sm:h-[56px] flex items-center justify-center text-3xl sm:text-5xl font-bold ${
+                      className={`h-[40px] sm:h-[56px] flex items-center justify-center text-3xl sm:text-3xl font-bold ${
                         index === 2 ? "text-pink-200" : "text-gray-600"
                       }`}
                     >
@@ -255,7 +255,7 @@ export const Slot: React.FC = () => {
                 key={reelIndex}
                 onClick={() => stopReel(reelIndex)}
                 disabled={!spinning[reelIndex]}
-                className={`py-2 rounded-full text-white font-bold shadow text-sm btn-stop`}
+                className={`py-2 rounded-full text-white font-bold text-sm btn-stop`}
               >
                 STOP
               </button>
@@ -265,7 +265,7 @@ export const Slot: React.FC = () => {
           <button
             onClick={startSpin}
             disabled={spinning.some((s) => s)}
-            className={`w-full py-3 rounded-full text-white font-bold shadow btn-start`}
+            className={`w-full py-3 rounded-full text-white font-bold btn-start`}
           >
             スタート
           </button>
@@ -278,7 +278,7 @@ export const Slot: React.FC = () => {
         )}
 
         {slotState === "stopped" && (
-          <div className={"items-center justify-center flex flex-col"}>
+          <div className={"xpost-button"}>
             <XPostButton id={generateURIID} />
           </div>
         )}
@@ -293,12 +293,6 @@ export const Slot: React.FC = () => {
           src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"
         />
       </div>
-        <a href="#" className="btn-sns btn-x">
-          <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" // Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. 
-            >
-              <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path>
-          </svg>
-        </a>
     </div>
   );
 };
