@@ -16,6 +16,16 @@ export const metadata: Metadata = {
   title: "宝灯桃汁スロットマシーン2025春",
   description: "宝灯桃汁スロットマシーン2025春",
   metadataBase: new URL("https://anatofuz.net/momojiruslot202504"),
+  openGraph: {
+    images: [
+      {
+        url: "/ogp/og-image.png", // public/ogp/og-image.png を指定
+        width: 1200,
+        height: 630,
+        alt: "宝灯桃汁スロットマシーン2025春",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

@@ -1,26 +1,26 @@
 @import "tailwindcss";
-
+/* 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
+} */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* --color-background: var(--background);
+  --color-foreground: var(--foreground); */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
-  background: var(--background);
+  /* background: var(--background); */
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -44,4 +44,85 @@ body {
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out;
   }
+}
+
+.all-wrap{
+  flex-direction: column;
+  position: relative
+}
+.slot-height{
+  height: 11rem;
+}
+.border-pink{
+  border-color: #ad2660;
+}
+.border-pink--2{
+  border-color: #db2774;
+}
+.button-wrap{
+  padding: 24px 16px 0;
+}
+.button-stop{
+  margin-bottom: 24px;
+}
+.background{
+  background-color: #FFE3F2;
+}
+.background-top{
+  background-color: #EE3F87;
+  padding-bottom: 24px;
+}
+.background-btn-wrap{
+  background-color: #f6c0de; 
+}
+.background-slot-wrap{
+  background-color: #f6c0de; 
+
+}
+.btn-start{
+  background-color: #fff;
+  color: #ad2660;
+  box-shadow: 0px 5px 10px 0px rgba(143, 31, 57, 1);
+}
+.btn-start:hover{
+  background-color: #f6c0de;
+  transition: 0.2s;
+  color: #ad2660;
+}
+.btn-stop{
+  background-color: #fff;
+  color: #ad2660;
+  box-shadow: 0px 5px 10px 0px rgba(143, 31, 57, 1);
+
+}
+button:disabled, button.disabled{
+  background-color: #861043;
+  pointer-events: none;
+}
+.music-volume-off{
+  margin: 0 auto 20px;
+  display: block;
+  padding: 5px 10px;
+  background-color: #fff;
+  border-radius: 15px;
+  color: #ad2660;
+  font-size: 12px;
+  font-weight: bold;
+}
+.music-volume-off.mute{
+  background-color: #861043;
+  color: #ad2660;
+}
+.tweet-button{
+  display: flex;
+  background-color: #14171a;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 30px;
+  justify-self: center;
+  padding: 10px 15px;
+}
+.tweet-button:hover{
+  opacity: 0.8;
+  transition: 0.2s;
 }

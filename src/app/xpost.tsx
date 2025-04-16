@@ -30,10 +30,9 @@ export const XPostButton: React.FC<Props> = ({ id }) => {
       href={`https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="mt-6 inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-md transition-transform transform hover:scale-105"
+      className="mt-6 tweet-button"
     >
-      <X className="w-5 h-5 mr-2" />
-      ツイートする
+      Xにポストする
     </Link>
   );
 };

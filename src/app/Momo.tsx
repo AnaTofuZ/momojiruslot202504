@@ -26,6 +26,7 @@ export const Slot: React.FC = () => {
   const [slotState, setSlotState] = useState<"idle" | "spinning" | "stopped">(
     "idle",
   );
+  const [isMuted, setIsMuted] = useState(false); // ミュート状態を管理
 
   React.useEffect(() => {
     if (spinning.every((s) => !s)) {
@@ -194,36 +195,47 @@ export const Slot: React.FC = () => {
 
   return (
     <div
-      className="min-h-[100vh] bg-gradient-to-b from-pink-400 to-pink-600 flex items-center justify-center p-4"
+      className="min-h-[100vh] bg-gradient-to-b flex items-center p-4 background all-wrap"
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
-      <div className="w-full max-w-md bg-gradient-to-b from-pink-300 to-pink-400 rounded-[2rem] shadow-2xl border-8 border-pink-200 overflow-hidden">
-        <div className="p-3 text-center bg-pink-800 text-white text-xl font-bold">
+      <button
+        className={`music-volume-off ${isMuted ? "mute" : ""}`} // ミュート時にクラスを追加
+        onClick={() => {
+          if (videoRef.current) {
+            const newMutedState = !videoRef.current.muted;
+            videoRef.current.muted = newMutedState; // ミュート状態を切り替え
+            setIsMuted(newMutedState); // 状態を更新
+          }
+          }}
+        >動画の音を消す</button>
+
+      <div className="w-full max-w-md bg-gradient-to-b rounded-[2rem]  border-8 border-pink overflow-hidden background-top">
+        <div className="p-3 text-center text-white text-xl font-bold">
           回転数: {startCount.toLocaleString()}
         </div>
 
-        <div className="w-full max-w-md bg-gradient-to-b from-pink-300 to-pink-400 rounded-[2rem] shadow-2xl border-2 border-pink-200 overflow-hidden"></div>
+        <div className="w-full max-w-md bg-gradient-to-b rounded-[2rem]  border-2 border-pink overflow-hidden"></div>
 
-        <div className="p-4 text-center bg-pink-800 text-white text-xl font-bold">
+        <div className="p-4 text-center text-white text-xl font-bold">
           うろ覚え宝灯桃汁スロットマシーン
         </div>
 
         <video ref={videoRef} src={"./nihao.mp4"} autoPlay />
-        <div className="px-4 py-2 bg-pink-700 flex justify-between gap-2">
+        <div className="px-4 py-2 flex justify-between gap-2 background-slot-wrap">
           {reels.map((position, reelIndex) => (
             <div
               key={reelIndex}
-              className="relative bg-black rounded-md overflow-hidden border-2 border-pink-300 flex-1 h-[240px] sm:h-[300px]"
+              className="relative bg-black rounded-md overflow-hidden border-2 border-pink--2 flex-1 slot-height"
             >
               <div className="absolute top-[50%] left-0 right-0 h-[2px] bg-yellow-400 opacity-60 z-10" />
 
-              <div className="absolute inset-0 flex flex-col items-center pt-8 pb-8">
+              <div className="absolute inset-0 flex flex-col items-center">
                 {generateReelContent(reelIndex, position).map(
                   (symbol, index) => (
                     <div
                       key={index}
-                      className={`h-[40px] sm:h-[56px] flex items-center justify-center text-3xl sm:text-5xl font-bold ${
+                      className={`h-[40px] sm:h-[56px] flex items-center justify-center text-3xl sm:text-3xl font-bold ${
                         index === 2 ? "text-pink-200" : "text-gray-600"
                       }`}
                     >
@@ -236,30 +248,24 @@ export const Slot: React.FC = () => {
           ))}
         </div>
 
-        <div className="px-4 py-6 bg-pink-300">
-          <div className="grid grid-cols-4 gap-2 mb-4">
+        <div className="button-wrap">
+          <div className="grid grid-cols-4 gap-2 button-stop">
             {reels.map((_, reelIndex) => (
               <button
                 key={reelIndex}
                 onClick={() => stopReel(reelIndex)}
                 disabled={!spinning[reelIndex]}
-                className={`py-2 rounded-full text-white font-bold shadow text-sm ${
-                  spinning[reelIndex]
-                    ? "bg-red-500 hover:bg-red-600"
-                    : "bg-gray-400 cursor-not-allowed"
-                }`}
-              ></button>
+                className={`py-2 rounded-full text-white font-bold text-sm btn-stop`}
+              >
+                STOP
+              </button>
             ))}
           </div>
 
           <button
             onClick={startSpin}
             disabled={spinning.some((s) => s)}
-            className={`w-full py-3 rounded-full text-white font-bold shadow ${
-              spinning.some((s) => s)
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
+            className={`w-full py-3 rounded-full text-white font-bold btn-start`}
           >
             スタート
           </button>
@@ -272,7 +278,7 @@ export const Slot: React.FC = () => {
         )}
 
         {slotState === "stopped" && (
-          <div className={"items-center justify-center flex flex-col"}>
+          <div className={"xpost-button"}>
             <XPostButton id={generateURIID} />
           </div>
         )}
