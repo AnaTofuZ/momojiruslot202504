@@ -209,7 +209,7 @@ export const Slot: React.FC = () => {
           うろ覚え宝灯桃汁スロットマシーン
         </div>
 
-        <video ref={videoRef} src={"./nihao.mp4"} autoPlay />
+        <video ref={videoRef} src={"/nihao.mp4"} autoPlay />
         <div className="px-4 py-2 bg-pink-700 flex justify-between gap-2">
           {reels.map((position, reelIndex) => (
             <div
@@ -277,7 +277,7 @@ export const Slot: React.FC = () => {
           </div>
         )}
 
-        <audio ref={audioRef} src="./nari.mp3" />
+        <audio ref={audioRef} src="/nari.mp3" />
         <audio
           ref={reachAudioRef}
           src="https://assets.mixkit.co/active_storage/sfx/2020/2019-preview.mp3"

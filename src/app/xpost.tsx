@@ -22,7 +22,7 @@ export const XPostButton: React.FC<Props> = ({ id }) => {
   const ja = getCharsFromURL(id).join("");
   const tweetText = encodeURIComponent(createText(ja));
   const tweetUrl = encodeURIComponent(
-    `https://anatofuz.net/momojiruslot202504/${id}`,
+    `https://momojiruslot202504.anatofuz.net/${id}`,
   );
 
   return (
